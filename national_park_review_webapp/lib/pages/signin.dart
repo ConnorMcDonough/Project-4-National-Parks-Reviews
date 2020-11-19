@@ -1,38 +1,38 @@
 import 'dart:html';
 
 import 'package:flutter/material.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
-double collapsableHeight = 0.0;
-double size;
-
-class Signin extends StatelessWidget {
-  Signin();
-
-  @override
-  Widget build(BuildContext context) {
-    if (MediaQuery.of(context).size.width < 800.0) {
-      if (collapsableHeight == 0.0) {
-        collapsableHeight = 240.0;
-        size = 240;
-      } else if (collapsableHeight == 240.0) {
-        collapsableHeight = 0.0;
-        size = 120;
-      }
-    }
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Column(
-                children: [
-                  Text("Signin")
-                ],
+class Signin {
+  static openPopup(context) {
+    Alert(
+        context: context,
+        title: "LOGIN",
+        content: Column(
+          children: <Widget>[
+            TextField(
+              decoration: InputDecoration(
+                icon: Icon(Icons.account_circle),
+                labelText: 'Email',
               ),
-            ],
-          ),
-        ],
-      ),
-    );
+            ),
+            TextField(
+              obscureText: true,
+              decoration: InputDecoration(
+                icon: Icon(Icons.lock),
+                labelText: 'Password',
+              ),
+            ),
+          ],
+        ),
+        buttons: [
+          DialogButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              "LOGIN",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          )
+        ]).show();
   }
 }

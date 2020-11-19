@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:national_park_review_webapp/pages/about.dart';
 import 'package:national_park_review_webapp/pages/signin.dart';
+import 'package:national_park_review_webapp/pages/signup.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 double collapsableHeight = 0.0;
 Color selected = Color(0xffffffff);
@@ -99,7 +101,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
-            Container(child: _buildChild()),
           ],
         ),
       ),
@@ -110,7 +111,6 @@ class _MyHomePageState extends State<MyHomePage> {
 Widget _buildChild() {
   print("Page=" + _MyHomePageState.page.toString());
   if (_MyHomePageState.page == 0) {
-    return Signin();
   } else if (_MyHomePageState.page == 1) {
     return About();
   } else if (_MyHomePageState.page == 2) {
@@ -154,12 +154,12 @@ class _NavBarItemState extends State<NavBarItem> {
         child: InkWell(
           splashColor: Colors.white60,
           onTap: () {
-            if (widget.text == "About") {
-                setState(() {
-                  print("pb=" + _MyHomePageState.page.toString());
-                  _MyHomePageState.page = 1;
-                  print("pa=" + _MyHomePageState.page.toString());
-                });
+            if (widget.text == "Sign in") {
+              print("signin");
+              Signin.openPopup(context);
+            } else if (widget.text == "Sign up") {
+              print("signup");
+              Signup.openPopup(context);
             }
           },
           child: Container(
