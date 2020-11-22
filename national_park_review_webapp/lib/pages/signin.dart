@@ -1,53 +1,73 @@
-import 'dart:html';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 import '../authentication_service.dart';
 
-class Signin {
-  static TextEditingController emailController = TextEditingController();
-  static TextEditingController passwordController = TextEditingController();
-  static openPopup(context) {
-    Alert(
-        context: context,
-        title: "LOGIN",
-        content: Column(
-          children: <Widget>[
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(
-                icon: Icon(Icons.account_circle),
-                labelText: 'Email',
-              ),
-            ),
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                icon: Icon(Icons.lock),
-                labelText: 'Password',
-              ),
-            ),
-          ],
+class SignInPage extends StatelessWidget {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  SignInPage();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Colors.white,
         ),
-        buttons: [
-          DialogButton(
-            onPressed: () {
-              print(emailController.text.trim());
-              print(passwordController.text.trim());
-              context.read<AuthenticationService>().signIn(
-                    email: emailController.text.trim(),
-                    password: passwordController.text.trim(),
-                  );
-              Navigator.pop(context);
-            },
-            child: Text(
-              "LOGIN",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          )
-        ]).show();
+        title: const Text(
+          'Sign in',
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.only(top: 20, left: MediaQuery.of(context).size.width/4, right: MediaQuery.of(context).size.width/4),
+          child: Column(
+            children: [
+              Icon(
+                Icons.terrain_sharp,
+                size: 90,
+              ),
+              TextField(
+                controller: emailController,
+                enableSuggestions: false,
+                autocorrect: false,
+                decoration: InputDecoration(
+                  icon: Icon(Icons.account_circle),
+                  labelText: "Email",
+                  
+                ),
+              ),
+              TextField(
+                controller: passwordController,
+                obscureText: true,
+                enableSuggestions: false,
+                autocorrect: false,
+                decoration: InputDecoration(
+                  icon: Icon(Icons.lock),
+                  labelText: "Password",
+                ),
+              ),
+              RaisedButton(
+                onPressed: () {
+                  try {
+                    context.read<AuthenticationService>().signIn(
+                          email: emailController.text.trim(),
+                          password: passwordController.text.trim(),
+                        );
+                    Navigator.pop(context);
+                  } on FirebaseAuthException catch (e) {
+                    e.message;
+                  }
+                },
+                child: Text("Sign in"),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

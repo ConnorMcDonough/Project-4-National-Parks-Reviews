@@ -2,7 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:national_park_review_webapp/pages/signin.dart';
-import 'package:national_park_review_webapp/pages/signup.dart';
+import 'package:national_park_review_webapp/pages/signin1.dart';
+import 'package:national_park_review_webapp/pages/signup1.dart';
 import 'package:provider/provider.dart';
 
 import '../authentication_service.dart';
@@ -147,7 +148,9 @@ class _NavBarItemState extends State<NavBarItem> {
           onTap: () {
             if (widget.text == "Sign in") {
               print("signin");
-              Signin.openPopup(context);
+              Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => SignInPage()));
+              //Signin.openPopup(context);
             } else if (widget.text == "Sign up") {
               print("signup");
               Signup.openPopup(context);

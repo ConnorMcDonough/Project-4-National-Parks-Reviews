@@ -23,10 +23,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  cloud_firestore: ^0.14.3
+  cloud_firestore_web: ^0.2.1
   cupertino_icons: ^1.0.0
   firebase_auth: ^0.18.3
   firebase_auth_web: ^0.3.2
   firebase_core: ^0.5.2
+  firebase_database: ^4.3.0
+  firebase_storage: ^5.0.1
   provider: ^4.3.2+2
   rflutter_alert: ^1.1.0
 

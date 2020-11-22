@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:national_park_review_webapp/pages/home.dart';
+import 'package:national_park_review_webapp/pages/home2.dart';
+import 'package:national_park_review_webapp/pages/signin.dart';
 import 'package:provider/provider.dart';
 
 import 'authentication_service.dart';
@@ -26,7 +28,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: "National Park Reviews",
         theme: ThemeData(
-          primaryColor: Colors.white,
+          primaryColor: Colors.black,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         home: AuthenticationWrapper(),
@@ -43,7 +45,7 @@ class AuthenticationWrapper extends StatelessWidget {
 
     if (firebaseuser != null) {
       print("Logged in!");
-      return MyHomePage();
+      return Home();
     }
     ;
     return MyHomePage();
