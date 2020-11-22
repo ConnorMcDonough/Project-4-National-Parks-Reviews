@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:national_park_review_webapp/pages/about.dart';
 import 'package:national_park_review_webapp/pages/signin.dart';
 import 'package:national_park_review_webapp/pages/signup.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:provider/provider.dart';
+
+import '../authentication_service.dart';
 
 double collapsableHeight = 0.0;
 Color selected = Color(0xffffffff);
@@ -108,17 +110,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-Widget _buildChild() {
-  print("Page=" + _MyHomePageState.page.toString());
-  if (_MyHomePageState.page == 0) {
-  } else if (_MyHomePageState.page == 1) {
-    return About();
-  } else if (_MyHomePageState.page == 2) {
-  } else if (_MyHomePageState.page == 3) {
-  } else if (_MyHomePageState.page == 4) {}
-  return Container();
-}
-
 List<Widget> navBarItems = [
   NavBarItem(
     text: 'About',
@@ -160,6 +151,8 @@ class _NavBarItemState extends State<NavBarItem> {
             } else if (widget.text == "Sign up") {
               print("signup");
               Signup.openPopup(context);
+            } else if (widget.text == "Contact") {
+              print("Contact!~");
             }
           },
           child: Container(
