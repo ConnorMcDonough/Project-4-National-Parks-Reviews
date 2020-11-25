@@ -23,7 +23,10 @@ class SignInPage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.only(top: 20, left: MediaQuery.of(context).size.width/4, right: MediaQuery.of(context).size.width/4),
+          margin: EdgeInsets.only(
+              top: 20,
+              left: MediaQuery.of(context).size.width / 4,
+              right: MediaQuery.of(context).size.width / 4),
           child: Column(
             children: [
               Icon(
@@ -37,7 +40,6 @@ class SignInPage extends StatelessWidget {
                 decoration: InputDecoration(
                   icon: Icon(Icons.account_circle),
                   labelText: "Email",
-                  
                 ),
               ),
               TextField(
@@ -50,20 +52,23 @@ class SignInPage extends StatelessWidget {
                   labelText: "Password",
                 ),
               ),
-              RaisedButton(
-                onPressed: () {
-                  try {
-                    context.read<AuthenticationService>().signIn(
-                          email: emailController.text.trim(),
-                          password: passwordController.text.trim(),
-                        );
-                    Navigator.pop(context);
-                  } on FirebaseAuthException catch (e) {
-                    e.message;
-                  }
-                },
-                child: Text("Sign in"),
-              )
+              Container(
+                margin: EdgeInsets.only(top: 30),
+                child: RaisedButton(
+                  onPressed: () {
+                    try {
+                      context.read<AuthenticationService>().signIn(
+                            email: emailController.text.trim(),
+                            password: passwordController.text.trim(),
+                          );
+                      Navigator.pop(context);
+                    } on FirebaseAuthException catch (e) {
+                      e.message;
+                    }
+                  },
+                  child: Text("Sign in"),
+                ),
+              ),
             ],
           ),
         ),

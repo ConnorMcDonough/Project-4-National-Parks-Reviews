@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:national_park_review_webapp/pages/home.dart';
 import 'package:national_park_review_webapp/pages/home2.dart';
-import 'package:national_park_review_webapp/pages/signin.dart';
 import 'package:provider/provider.dart';
 
 import 'authentication_service.dart';
@@ -43,11 +42,11 @@ class AuthenticationWrapper extends StatelessWidget {
     print("AuthenticationWrapper called!");
     final firebaseuser = context.watch<User>();
 
-    if (firebaseuser != null) {
+    /*if (firebaseuser != null) {
       print("Logged in!");
       return Home();
     }
-    ;
+    ;*/
     return MyHomePage();
   }
 }

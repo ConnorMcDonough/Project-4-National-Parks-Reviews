@@ -31,6 +31,8 @@ dependencies:
   firebase_core: ^0.5.2
   firebase_database: ^4.3.0
   firebase_storage: ^5.0.1
+  fluttertoast: ^7.1.4
+  http: ^0.12.2
   provider: ^4.3.2+2
   rflutter_alert: ^1.1.0
 
