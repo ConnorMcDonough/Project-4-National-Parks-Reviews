@@ -2,6 +2,7 @@ import 'dart:html';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:national_park_review_webapp/pages/reviews.dart';
 import 'package:national_park_review_webapp/pages/signin.dart';
 import 'package:national_park_review_webapp/pages/signup.dart';
 
@@ -27,7 +28,9 @@ class _MyHomePageState extends State<MyHomePage> {
   static int page = 0;
 
   final String url =
-      "https://developer.nps.gov/api/v1/parks?stateCode=ca&limit="+lengthOfJson.toString()+"&api_key=YnnSWf8sXMzWejXgbxYnKGGPYsnwAqAXOzIjVE9A";
+      "https://developer.nps.gov/api/v1/parks?stateCode=ca&limit=" +
+          lengthOfJson.toString() +
+          "&api_key=YnnSWf8sXMzWejXgbxYnKGGPYsnwAqAXOzIjVE9A";
 
   @override
   Widget build(BuildContext context) {
@@ -133,20 +136,21 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
               ),
             ),
-            new Row(
+            Row(
               children: <Widget>[
-                Expanded(
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height/1.4,
-                    child: new ListView.builder(
-                        itemCount: lengthOfJson,
-                        itemBuilder: (BuildContext ctxt, int index) =>
-                            buildBody(ctxt, index)),
-                  ),
-                ),
+                SizedBox(
+                    height: MediaQuery.of(context).size.height / 1.4,
+                    width: MediaQuery.of(context).size.width / 1.4,
+                    child: Scrollbar(
+                      thickness: 12,
+                      child: new ListView.builder(
+                          itemCount: lengthOfJson,
+                          itemBuilder: (BuildContext ctxt, int index) =>
+                              buildBody(ctxt, index)),
+                    )),
               ],
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            )
+              mainAxisAlignment: MainAxisAlignment.center,
+            ),
           ],
         ),
       ),
@@ -164,10 +168,36 @@ class _MyHomePageState extends State<MyHomePage> {
             parkData = ParkData.fromJson(jsonDecode(response.data.body));
           }
           return response.hasData
-              ? Text(
-                  "" + parkData.data[index].fullName,
-                )
-              : Text("Loadings...");
+              ? Container(
+                  margin: EdgeInsets.only(left: 30, right: 30),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black,
+                      width: 4,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: FlatButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Reviews(index, parkData)));
+                    },
+                    child: Text(
+                      "" + parkData.data[index].fullName,
+                      style: new TextStyle(
+                        color: Colors.black,
+                        fontSize: MediaQuery.of(context).size.height / 36,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ))
+              : Text("Loadings...",
+                  textAlign: TextAlign.center,
+                  style: new TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ));
         },
       ),
     );
@@ -177,6 +207,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final response = await http.get(url);
     ParkData parkData = ParkData.fromJson(jsonDecode(response.body));
     //lengthOfJson=int.parse(parkData.limit);
+    print(parkData.data[0].images[0].url);
     return lengthOfJson;
   }
 }
