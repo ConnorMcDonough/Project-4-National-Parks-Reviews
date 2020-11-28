@@ -2,6 +2,7 @@ import 'dart:html';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:national_park_review_webapp/pages/logout.dart';
 import 'package:national_park_review_webapp/pages/reviews.dart';
 import 'package:national_park_review_webapp/pages/signin.dart';
 import 'package:national_park_review_webapp/pages/signup.dart';
@@ -34,7 +35,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    getRequest();
     print("Build!");
     return Scaffold(
       body: Container(
@@ -116,26 +116,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
-            Container(
-              margin: EdgeInsets.only(bottom: 10),
-              child: FutureBuilder<http.Response>(
-                future: http.get(url),
-                builder: (_, response) {
-                  ParkData parkData;
-                  if (response.hasData) {
-                    parkData =
-                        ParkData.fromJson(jsonDecode(response.data.body));
-                    //lengthOfJson=int.parse(parkData.limit);
-                    print("L: " + lengthOfJson.toString());
-                  }
-                  return response.hasData
-                      ? Text(
-                          "" + parkData.data.length.toString(),
-                        )
-                      : CircularProgressIndicator();
-                },
-              ),
-            ),
             Row(
               children: <Widget>[
                 SizedBox(
@@ -202,19 +182,11 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
-  getRequest() async {
-    final response = await http.get(url);
-    ParkData parkData = ParkData.fromJson(jsonDecode(response.body));
-    //lengthOfJson=int.parse(parkData.limit);
-    print(parkData.data[0].images[0].url);
-    return lengthOfJson;
-  }
 }
 
 List<Widget> navBarItems = [
   NavBarItem(
-    text: 'About',
+    text: 'UofM-D 2020',
   ),
   NavBarItem(
     text: 'Sign in',
@@ -223,7 +195,7 @@ List<Widget> navBarItems = [
     text: 'Sign up',
   ),
   NavBarItem(
-    text: 'Contact',
+    text: 'Log out',
   ),
 ];
 
@@ -256,8 +228,9 @@ class _NavBarItemState extends State<NavBarItem> {
               print("signup");
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => SignUpPage()));
-            } else if (widget.text == "Contact") {
-              print("Contact!~");
+            } else if (widget.text == "Log out") {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => LogOutPage()));
             }
           },
           child: Container(

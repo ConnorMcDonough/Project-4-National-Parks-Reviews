@@ -5,29 +5,44 @@ import 'package:flutter/material.dart';
 
 import '../park_json_formatter.dart';
 
-class Reviews extends StatelessWidget {
+class Reviews extends StatefulWidget {
+  Reviews(this.index, this.parkData);
+  ParkData parkData;
+  int index;
+  @override
+  State<StatefulWidget> createState() {
+    return ReviewsState(this.index, this.parkData);
+  }
+}
+
+class ReviewsState extends State<Reviews> {
   int index;
   final DatabaseReference = FirebaseDatabase.instance;
   final firestoreInstance = FirebaseFirestore.instance;
   final FirebaseAuth auth = FirebaseAuth.instance;
+  final TextEditingController nameController = TextEditingController();
 
   ParkData parkData;
 
-  Reviews(this.index, this.parkData);
+  ReviewsState(this.index, this.parkData);
   final TextEditingController reviewContent = TextEditingController();
 
   String acts;
   String uid;
   int numOfReivews = 0;
+  bool setNumOfReviews = false;
+  String loggedInStatus = "Not Logged in! (Non-validated Review)";
+  bool loggedIn = false;
 
   @override
   Widget build(BuildContext context) {
-    blah();
     final ref = DatabaseReference.reference();
     if (FirebaseAuth.instance.currentUser != null) {
       FirebaseAuth auth = FirebaseAuth.instance;
       uid = auth.currentUser.uid;
       print("uid: " + uid);
+      loggedInStatus = "Logged in! (Validated Review)";
+      loggedIn = true;
     } else {
       print("Not logged in!");
     }
@@ -52,8 +67,14 @@ class Reviews extends StatelessWidget {
                     .get(),
                 builder: (_, snap) {
                   if (snap.hasData) {
-                    numOfReivews = snap.data.docs.length;
-                    print("nuRe: "+numOfReivews.toString());
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (setNumOfReviews == false) {
+                        setState(() {
+                          numOfReivews = snap.data.docs.length;
+                        });
+                        setNumOfReviews = true;
+                      }
+                    });
                   }
                   return Container();
                 },
@@ -72,7 +93,7 @@ class Reviews extends StatelessWidget {
                   parkData.data[index].description,
                   textAlign: TextAlign.center,
                   style: new TextStyle(
-                    fontSize: MediaQuery.of(context).size.width / 70,
+                    fontSize: MediaQuery.of(context).size.width / 85,
                   ),
                 ),
               ),
@@ -80,7 +101,7 @@ class Reviews extends StatelessWidget {
                 margin: EdgeInsets.only(top: 20),
                 child: Image.network(
                   parkData.data[index].images[0].url,
-                  height: MediaQuery.of(context).size.width / 3.5,
+                  height: MediaQuery.of(context).size.width / 4.5,
                   fit: BoxFit.fill,
                 ),
               ),
@@ -90,7 +111,7 @@ class Reviews extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: new TextStyle(
                     fontStyle: FontStyle.italic,
-                    fontSize: MediaQuery.of(context).size.width / 80,
+                    fontSize: MediaQuery.of(context).size.width / 100,
                   ),
                 ),
               ),
@@ -100,7 +121,7 @@ class Reviews extends StatelessWidget {
                   activities(),
                   textAlign: TextAlign.center,
                   style: new TextStyle(
-                    fontSize: MediaQuery.of(context).size.width / 70,
+                    fontSize: MediaQuery.of(context).size.width / 85,
                   ),
                 ),
               ),
@@ -110,7 +131,7 @@ class Reviews extends StatelessWidget {
                   parkData.data[index].weatherInfo,
                   textAlign: TextAlign.center,
                   style: new TextStyle(
-                    fontSize: MediaQuery.of(context).size.width / 70,
+                    fontSize: MediaQuery.of(context).size.width / 85,
                   ),
                 ),
               ),
@@ -121,7 +142,7 @@ class Reviews extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: new TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: MediaQuery.of(context).size.width / 45,
+                    fontSize: MediaQuery.of(context).size.width / 65,
                   ),
                 ),
               ),
@@ -153,6 +174,49 @@ class Reviews extends StatelessWidget {
                     ),
                   )),
               Container(
+                child: Text(
+                  loggedInStatus,
+                  textAlign: TextAlign.center,
+                  style: new TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontSize: MediaQuery.of(context).size.width / 80,
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width / 3,
+                    right: MediaQuery.of(context).size.width / 3),
+                child: TextField(
+                  controller: nameController,
+                  enableSuggestions: false,
+                  autocorrect: false,
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.account_circle),
+                    labelText: "Name",
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 30),
+                child: RaisedButton(
+                  onPressed: () {
+                    if (reviewContent.text != null &&
+                        nameController.text != null) {
+                      if (loggedIn == true) {
+                        reviewContent.text += " (VALIDATED REVIEW ✔)";
+                      }
+                      setState(() {
+                        sendReview(reviewContent.text, nameController.text);
+                        reviewContent.text="";
+                        nameController.text="";
+                      });
+                    }
+                  },
+                  child: Text("Submit Review"),
+                ),
+              ),
+              Container(
                 margin: EdgeInsets.only(top: 100),
               )
             ],
@@ -171,7 +235,6 @@ class Reviews extends StatelessWidget {
             .doc(spot.toString())
             .get(),
         builder: (_, snap) {
-          print("build: " + parkData.data[index].name);
           return snap.hasData
               ? Text(
                   snap.data.data()["reviewer"] +
@@ -179,7 +242,7 @@ class Reviews extends StatelessWidget {
                       snap.data.data()["review"],
                   textAlign: TextAlign.center,
                   style: new TextStyle(
-                    fontSize: MediaQuery.of(context).size.width / 60,
+                    fontSize: MediaQuery.of(context).size.width / 72,
                   ),
                 )
               : Text("Loadings...",
@@ -192,10 +255,16 @@ class Reviews extends StatelessWidget {
     );
   }
 
-  blah() {
-    for (int x = 0; x < 33; x++) {
-      print(parkData.data[x].name);
-    }
+  Future<void> sendReview(String reviewContent, String name) async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    CollectionReference park =
+        FirebaseFirestore.instance.collection(parkData.data[index].name);
+    park
+        .doc(numOfReivews.toString())
+        .set({"review": reviewContent, "reviewer": name});
+
+    numOfReivews++;
+    return;
   }
 
   activities() {
