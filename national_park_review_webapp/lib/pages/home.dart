@@ -1,5 +1,6 @@
 import 'dart:html';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:national_park_review_webapp/pages/logout.dart';
@@ -17,6 +18,7 @@ Color selected = Color(0xffffffff);
 Color notSelected = Color(0xafffffff);
 List<String> litems = ["1", "2", "Third", "4"];
 final int lengthOfJson = 33;
+String loginStatus = "";
 
 class MyHomePage extends StatefulWidget {
   MyHomePage();
@@ -35,6 +37,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (FirebaseAuth.instance.currentUser != null) {
+      loginStatus = "You are logged in";
+    } else {
+      loginStatus = "";
+    }
     print("Build!");
     return Scaffold(
       body: Container(
@@ -115,6 +122,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ],
+            ),
+            Container(
+              margin: EdgeInsets.only(bottom: 10),
+              child: Text(loginStatus,
+                  style:
+                      new TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
             ),
             Row(
               children: <Widget>[

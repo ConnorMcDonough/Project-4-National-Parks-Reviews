@@ -256,7 +256,6 @@ class ReviewsState extends State<Reviews> {
   }
 
   Future<void> sendReview(String reviewContent, String name) async {
-    FirebaseAuth auth = FirebaseAuth.instance;
     CollectionReference park =
         FirebaseFirestore.instance.collection(parkData.data[index].name);
     park

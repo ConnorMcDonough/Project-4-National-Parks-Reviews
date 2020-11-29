@@ -6,14 +6,22 @@ import 'package:provider/provider.dart';
 import '../authentication_service.dart';
 import '../main.dart';
 
-class SignUpPage extends StatelessWidget {
+class SignUpPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return SignUpPageState();
+  }
+}
+
+class SignUpPageState extends State<SignUpPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController emailControllerRetype = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController passwordControllerRetype =
       TextEditingController();
 
-  SignUpPage();
+  String accountErrorMessage = "";
+  SignUpPageState();
 
   @override
   Widget build(BuildContext context) {
@@ -77,13 +85,14 @@ class SignUpPage extends StatelessWidget {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(top:30),
+                margin: EdgeInsets.only(top: 30),
                 child: RaisedButton(
                   onPressed: () {
                     if (emailController.text != "" &&
                         emailController.text == emailControllerRetype.text &&
                         passwordController.text != "" &&
-                        passwordController.text == passwordControllerRetype.text) {
+                        passwordController.text ==
+                            passwordControllerRetype.text) {
                       //signs up
                       context.read<AuthenticationService>().signUp(
                             email: emailController.text.trim(),
@@ -95,22 +104,28 @@ class SignUpPage extends StatelessWidget {
 
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => MyApp()));
-                    } else if(emailController.text == "" ||passwordController.text == "") {
-                      Fluttertoast.showToast(
-                          msg: "Email or password are empty!",
-                          webPosition: "center",
-                          webBgColor: "#000000",
-                          toastLength: Toast.LENGTH_LONG);
-                    } else if(emailController.text != emailControllerRetype.text ||passwordController.text != passwordControllerRetype.text) {
-                      Fluttertoast.showToast(
-                          msg: "Email or password do not match!",
-                          webPosition: "center",
-                          webBgColor: "#000000",
-                          toastLength: Toast.LENGTH_LONG);
+                    } else if (emailController.text == "" ||
+                        passwordController.text == "") {
+                      setState(() {
+                        accountErrorMessage = "Email or password are empty!";
+                      });
+                    } else if (emailController.text !=
+                            emailControllerRetype.text ||
+                        passwordController.text !=
+                            passwordControllerRetype.text) {
+                      setState(() {
+                        accountErrorMessage = "Email or password do not match!";
+                      });
                     }
                   },
                   child: Text("Sign up"),
                 ),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 10),
+                child: Text(accountErrorMessage,
+                    style: new TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16)),
               ),
             ],
           ),
