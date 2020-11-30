@@ -83,18 +83,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      FlatButton(
-                        child: Text(
+                      Text(
                           'National Parks Reviews, CA',
                           style: TextStyle(
-                            fontSize: 22.0,
+                            fontSize: 19.0,
                             color: Color(0xffffffff),
                           ),
                         ),
-                        onPressed: () {
-                          print("oops");
-                        },
-                      ),
                       LayoutBuilder(
                         builder: (context, constraints) {
                           if (MediaQuery.of(context).size.width < 800.0) {
