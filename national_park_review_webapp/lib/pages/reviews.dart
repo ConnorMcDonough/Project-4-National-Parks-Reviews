@@ -83,9 +83,10 @@ class ReviewsState extends State<Reviews> {
                 parkData.data[index].fullName,
                 textAlign: TextAlign.center,
                 style: new TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: MediaQuery.of(context).size.width / 35,
-                ),
+                    fontWeight: FontWeight.bold,
+                    fontSize: (MediaQuery.of(context).size.width > 800.0)
+                        ? MediaQuery.of(context).size.width / 35
+                        : 40),
               ),
               Container(
                 margin: EdgeInsets.only(top: 10),
@@ -93,15 +94,18 @@ class ReviewsState extends State<Reviews> {
                   parkData.data[index].description,
                   textAlign: TextAlign.center,
                   style: new TextStyle(
-                    fontSize: MediaQuery.of(context).size.width / 85,
-                  ),
+                      fontSize: (MediaQuery.of(context).size.width > 800.0)
+                          ? MediaQuery.of(context).size.width / 85
+                          : 20),
                 ),
               ),
               Container(
                 margin: EdgeInsets.only(top: 20),
                 child: Image.network(
                   parkData.data[index].images[0].url,
-                  height: MediaQuery.of(context).size.width / 4.5,
+                  height: (MediaQuery.of(context).size.width > 800.0)
+                      ? MediaQuery.of(context).size.width / 4.5
+                      : 220,
                   fit: BoxFit.fill,
                 ),
               ),
@@ -110,9 +114,10 @@ class ReviewsState extends State<Reviews> {
                   parkData.data[index].images[0].caption,
                   textAlign: TextAlign.center,
                   style: new TextStyle(
-                    fontStyle: FontStyle.italic,
-                    fontSize: MediaQuery.of(context).size.width / 100,
-                  ),
+                      fontStyle: FontStyle.italic,
+                      fontSize: (MediaQuery.of(context).size.width > 800.0)
+                          ? MediaQuery.of(context).size.width / 100
+                          : 10),
                 ),
               ),
               Container(
@@ -121,8 +126,9 @@ class ReviewsState extends State<Reviews> {
                   activities(),
                   textAlign: TextAlign.center,
                   style: new TextStyle(
-                    fontSize: MediaQuery.of(context).size.width / 85,
-                  ),
+                      fontSize: (MediaQuery.of(context).size.width > 800.0)
+                          ? MediaQuery.of(context).size.width / 85
+                          : 20),
                 ),
               ),
               Container(
@@ -131,8 +137,9 @@ class ReviewsState extends State<Reviews> {
                   parkData.data[index].weatherInfo,
                   textAlign: TextAlign.center,
                   style: new TextStyle(
-                    fontSize: MediaQuery.of(context).size.width / 85,
-                  ),
+                      fontSize: (MediaQuery.of(context).size.width > 800.0)
+                          ? MediaQuery.of(context).size.width / 85
+                          : 20),
                 ),
               ),
               Container(
@@ -141,9 +148,10 @@ class ReviewsState extends State<Reviews> {
                   "Reviews",
                   textAlign: TextAlign.center,
                   style: new TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: MediaQuery.of(context).size.width / 65,
-                  ),
+                      fontWeight: FontWeight.bold,
+                      fontSize: (MediaQuery.of(context).size.width > 800.0)
+                          ? MediaQuery.of(context).size.width / 65
+                          : 34),
                 ),
               ),
               Row(
@@ -178,15 +186,20 @@ class ReviewsState extends State<Reviews> {
                   loggedInStatus,
                   textAlign: TextAlign.center,
                   style: new TextStyle(
-                    fontStyle: FontStyle.italic,
-                    fontSize: MediaQuery.of(context).size.width / 80,
-                  ),
+                      fontStyle: FontStyle.italic,
+                      fontSize: (MediaQuery.of(context).size.width > 800.0)
+                          ? MediaQuery.of(context).size.width / 80
+                          : 14),
                 ),
               ),
               Container(
                 margin: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width / 3,
-                    right: MediaQuery.of(context).size.width / 3),
+                    left: (MediaQuery.of(context).size.width > 800.0)
+                        ? MediaQuery.of(context).size.width / 3
+                        : 20,
+                    right: (MediaQuery.of(context).size.width > 800.0)
+                        ? MediaQuery.of(context).size.width / 3
+                        : 20),
                 child: TextField(
                   controller: nameController,
                   enableSuggestions: false,
@@ -208,8 +221,8 @@ class ReviewsState extends State<Reviews> {
                       }
                       setState(() {
                         sendReview(reviewContent.text, nameController.text);
-                        reviewContent.text="";
-                        nameController.text="";
+                        reviewContent.text = "";
+                        nameController.text = "";
                       });
                     }
                   },
@@ -242,7 +255,9 @@ class ReviewsState extends State<Reviews> {
                       snap.data.data()["review"],
                   textAlign: TextAlign.center,
                   style: new TextStyle(
-                    fontSize: MediaQuery.of(context).size.width / 72,
+                    fontSize: (MediaQuery.of(context).size.width > 800.0)
+                      ? MediaQuery.of(context).size.width/72
+                      : 19,
                   ),
                 )
               : Text("Loadings...",

@@ -19,6 +19,9 @@ Color notSelected = Color(0xafffffff);
 List<String> litems = ["1", "2", "Third", "4"];
 final int lengthOfJson = 33;
 String loginStatus = "";
+bool isLoggedin = false;
+bool jsonLoaded = false;
+
 
 class MyHomePage extends StatefulWidget {
   MyHomePage();
@@ -28,7 +31,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  static int page = 0;
+  ParkData parkData;
 
   final String url =
       "https://developer.nps.gov/api/v1/parks?stateCode=ca&limit=" +
@@ -39,156 +42,161 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     if (FirebaseAuth.instance.currentUser != null) {
       loginStatus = "You are logged in";
+      isLoggedin=true;
     } else {
       loginStatus = "";
+      isLoggedin=false;
     }
     print("Build!");
     return Scaffold(
-      body: Container(
-        constraints: BoxConstraints(
-          minHeight: 100,
-        ),
-        child: Column(
-          children: [
-            Image.asset(
-              'assets/images/background.jpg',
-              fit: BoxFit.cover,
-              height: MediaQuery.of(context).size.height / 6.5,
-              width: MediaQuery.of(context).size.width,
-            ),
-            Stack(
-              children: [
-                Container(
-                  color: Colors.white,
-                ),
-                AnimatedContainer(
-                  margin: EdgeInsets.only(top: 79.0),
-                  duration: Duration(milliseconds: 375),
-                  curve: Curves.ease,
-                  height: (MediaQuery.of(context).size.width < 800.0)
-                      ? collapsableHeight
-                      : 0.0,
-                  width: double.infinity,
-                  color: Color(0xff121212),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: navBarItems,
+      body: SingleChildScrollView(
+        child: Container(
+          constraints: BoxConstraints(
+            minHeight: 300,
+          ),
+          child: Column(
+            children: [
+              FutureBuilder<http.Response>(
+                future: http.get(url),
+                builder: (_, response) {
+                  if (response.hasData && jsonLoaded == false) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      setState(() {
+                        parkData =
+                            ParkData.fromJson(jsonDecode(response.data.body));
+                        jsonLoaded = true;
+                      });
+                    });
+                  }
+                  return Container();
+                },
+              ),
+              Image.asset(
+                'assets/images/background.jpg',
+                fit: BoxFit.cover,
+                height: MediaQuery.of(context).size.height / 6.5,
+                width: MediaQuery.of(context).size.width,
+              ),
+              Stack(
+                children: [
+                  Container(
+                    color: Colors.white,
+                  ),
+                  AnimatedContainer(
+                    margin: EdgeInsets.only(top: 79.0),
+                    duration: Duration(milliseconds: 375),
+                    curve: Curves.ease,
+                    height: (MediaQuery.of(context).size.width < 800.0)
+                        ? collapsableHeight
+                        : 0.0,
+                    width: double.infinity,
+                    color: Color(0xff121212),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: navBarItems,
+                      ),
                     ),
                   ),
-                ),
-                Container(
-                  color: Color(0xff121212),
-                  height: 60.0,
-                  padding: EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
+                  Container(
+                    color: Color(0xff121212),
+                    height: 60.0,
+                    padding: EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
                           'National Parks Reviews, CA',
                           style: TextStyle(
                             fontSize: 19.0,
                             color: Color(0xffffffff),
                           ),
                         ),
-                      LayoutBuilder(
-                        builder: (context, constraints) {
-                          if (MediaQuery.of(context).size.width < 800.0) {
-                            return NavBarButton(
-                              onPressed: () {
-                                if (collapsableHeight == 0.0) {
-                                  setState(() {
-                                    collapsableHeight = 240.0;
-                                  });
-                                } else if (collapsableHeight == 240.0) {
-                                  setState(() {
-                                    collapsableHeight = 0.0;
-                                  });
-                                }
-                              },
-                            );
-                          } else {
-                            return Row(
-                              children: navBarItems,
-                            );
-                          }
-                        },
-                      ),
-                    ],
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            if (MediaQuery.of(context).size.width < 800.0) {
+                              return NavBarButton(
+                                onPressed: () {
+                                  if (collapsableHeight == 0.0) {
+                                    setState(() {
+                                      collapsableHeight = 240.0;
+                                    });
+                                  } else if (collapsableHeight == 240.0) {
+                                    setState(() {
+                                      collapsableHeight = 0.0;
+                                    });
+                                  }
+                                },
+                              );
+                            } else {
+                              return Row(
+                                children: navBarItems,
+                              );
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            Container(
-              margin: EdgeInsets.only(bottom: 10),
-              child: Text(loginStatus,
-                  style:
-                      new TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
-            ),
-            Row(
-              children: <Widget>[
-                SizedBox(
-                    height: MediaQuery.of(context).size.height / 1.4,
-                    width: MediaQuery.of(context).size.width / 1.4,
-                    child: Scrollbar(
-                      thickness: 12,
-                      child: new ListView.builder(
-                          itemCount: lengthOfJson,
-                          itemBuilder: (BuildContext ctxt, int index) =>
-                              buildBody(ctxt, index)),
-                    )),
-              ],
-              mainAxisAlignment: MainAxisAlignment.center,
-            ),
-          ],
+                ],
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 10),
+                child: Text(loginStatus,
+                    style: new TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 24)),
+              ),
+              Row(
+                children: <Widget>[
+                  SizedBox(
+                      height: MediaQuery.of(context).size.height / 1.5,
+                      width: (MediaQuery.of(context).size.width > 800.0)
+                          ? MediaQuery.of(context).size.width / 1.6
+                          : MediaQuery.of(context).size.width,
+                      child: Scrollbar(
+                        thickness: 12,
+                        child: new ListView.builder(
+                            itemCount: lengthOfJson,
+                            itemBuilder: (BuildContext ctxt, int index) =>
+                                buildBody(ctxt, index, parkData)),
+                      )),
+                ],
+                mainAxisAlignment: MainAxisAlignment.center,
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget buildBody(BuildContext ctxt, int index) {
+  Widget buildBody(BuildContext ctxt, int index, ParkData parkData) {
     return new Container(
-      margin: EdgeInsets.only(bottom: 10),
-      child: FutureBuilder<http.Response>(
-        future: http.get(url),
-        builder: (_, response) {
-          ParkData parkData;
-          if (response.hasData) {
-            parkData = ParkData.fromJson(jsonDecode(response.data.body));
-          }
-          return response.hasData
-              ? Container(
-                  margin: EdgeInsets.only(left: 30, right: 30),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.black,
-                      width: 4,
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: FlatButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Reviews(index, parkData)));
-                    },
-                    child: Text(
-                      "" + parkData.data[index].fullName,
-                      style: new TextStyle(
-                        color: Colors.black,
-                        fontSize: MediaQuery.of(context).size.height / 36,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ))
-              : Text("Loadings...",
-                  textAlign: TextAlign.center,
-                  style: new TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ));
-        },
-      ),
-    );
+        margin: EdgeInsets.only(bottom: 10),
+        child: Container(
+            margin: EdgeInsets.only(left: 30, right: 30),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.black,
+                width: 4,
+              ),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: FlatButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Reviews(index, parkData)));
+              },
+              child: Text(
+                "" + parkData.data[index].fullName,
+                style: new TextStyle(
+                  color: Colors.black,
+                  fontSize: MediaQuery.of(context).size.height / 36,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            )));
   }
 }
 
@@ -219,6 +227,7 @@ class NavBarItem extends StatefulWidget {
 
 class _NavBarItemState extends State<NavBarItem> {
   Color color = notSelected;
+
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
@@ -227,16 +236,16 @@ class _NavBarItemState extends State<NavBarItem> {
         child: InkWell(
           splashColor: Colors.white60,
           onTap: () {
-            if (widget.text == "Sign in") {
+            if (widget.text == "Sign in"&&isLoggedin==false) {
               print("signin");
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => SignInPage()));
               //Signin.openPopup(context);
-            } else if (widget.text == "Sign up") {
+            } else if (widget.text == "Sign up"&&isLoggedin==false) {
               print("signup");
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => SignUpPage()));
-            } else if (widget.text == "Log out") {
+            } else if (widget.text == "Log out"&&isLoggedin==true) {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => LogOutPage()));
             }

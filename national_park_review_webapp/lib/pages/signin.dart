@@ -56,14 +56,17 @@ class SignInPage extends StatelessWidget {
                 margin: EdgeInsets.only(top: 30),
                 child: RaisedButton(
                   onPressed: () {
-                    try {
-                      context.read<AuthenticationService>().signIn(
-                            email: emailController.text.trim(),
-                            password: passwordController.text.trim(),
-                          );
-                      Navigator.pop(context);
-                    } on FirebaseAuthException catch (e) {
-                      e.message;
+                    if (emailController.text != "" &&
+                        passwordController.text != "") {
+                      try {
+                        context.read<AuthenticationService>().signIn(
+                              email: emailController.text.trim(),
+                              password: passwordController.text.trim(),
+                            );
+                        Navigator.pop(context);
+                      } on FirebaseAuthException catch (e) {
+                        e.message;
+                      }
                     }
                   },
                   child: Text("Sign in"),
