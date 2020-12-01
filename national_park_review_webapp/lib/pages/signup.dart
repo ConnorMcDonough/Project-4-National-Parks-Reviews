@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:national_park_review_webapp/pages/home.dart';
 import 'package:provider/provider.dart';
 
 import '../authentication_service.dart';
@@ -101,7 +102,7 @@ class SignUpPageState extends State<SignUpPage> {
                       //signs out
                       context.read<AuthenticationService>().signOut();
                       //signs in
-
+                      jsonLoaded=false;
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => MyApp()));
                     } else if (emailController.text == "" ||

@@ -214,8 +214,8 @@ class ReviewsState extends State<Reviews> {
                 margin: EdgeInsets.only(top: 30),
                 child: RaisedButton(
                   onPressed: () {
-                    if (reviewContent.text != null &&
-                        nameController.text != null) {
+                    if (reviewContent.text != "" &&
+                        nameController.text != "") {
                       if (loggedIn == true) {
                         reviewContent.text += " (VALIDATED REVIEW ✔)";
                       }
