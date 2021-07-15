@@ -5,6 +5,8 @@ Written in Dart using the Flutter-Web SDK
 This web-app took in json data from the national parks in Califoria and allowed you to review each site!
 You could also create an account for a "Verified" tag.
 
+Uses Firebase for Auth and Firestore for Database
+
 Home Page:
 ![Home Page](https://i.imgur.com/EKu7yMK.png)
 
